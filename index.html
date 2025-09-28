@@ -45,15 +45,67 @@
                 </div>
 
                 <div class="download-section">
-                    <button id="download-btn">
+                    <button id="source-code-btn">
                         <img src="download-icon.png" alt="">
-                        <span>Download Plugin</span>
+                        <span>View Source Code</span>
                     </button>
-                    <div class="progress-bar-container">
-                        <div id="progress-bar" class="progress-bar"></div>
-                    </div>
-                    <p id="status-text"></p>
                 </div>
+            </div>
+
+            <div id="source-code-container" class="source-code-container hidden">
+                <div class="source-code-header">
+                    <h4>MoleMorphPlugin.java</h4>
+                    <button id="copy-code-btn">Copy Code</button>
+                </div>
+                <pre><code id="plugin-code-block" class="language-java"><span class="comment">// MoleMorphPlugin.java</span>
+<span class="keyword">package</span> net.runelite.client.plugins.molemorph;
+
+<span class="keyword">import</span> javax.inject.Inject;
+<span class="keyword">import</span> net.runelite.api.*;
+<span class="keyword">import</span> net.runelite.api.events.GameTick;
+<span class="keyword">import</span> net.runelite.client.eventbus.Subscribe;
+<span class="keyword">import</span> net.runelite.client.plugins.Plugin;
+<span class="keyword">import</span> net.runelite.client.plugins.PluginDescriptor;
+
+@PluginDescriptor(
+    name = <span class="string">"MoleMorph"</span>,
+    description = <span class="string">"Transforms your character into a Baby Mole!"</span>,
+    tags = {<span class="string">"mole"</span>, <span class="string">"transform"</span>, <span class="string">"visual"</span>, <span class="string">"npc"</span>}
+)
+<span class="keyword">public class</span> MoleMorphPlugin <span class="keyword">extends</span> Plugin {
+
+    @Inject
+    <span class="keyword">private</span> Client client;
+
+    <span class="keyword">private final int</span> MOLE_NPC_ID = NpcID.BABY_MOLE;
+
+    @Override
+    <span class="keyword">protected void</span> startUp() <span class="keyword">throws</span> Exception {
+        updatePlayerModel();
+    }
+
+    @Override
+    <span class="keyword">protected void</span> shutDown() <span class="keyword">throws</span> Exception {
+        Player localPlayer = client.getLocalPlayer();
+        <span class="keyword">if</span> (localPlayer != <span class="literal">null</span>) {
+            localPlayer.getPlayerComposition().setTransmogId(-<span class="literal">1</span>);
+        }
+    }
+
+    @Subscribe
+    <span class="keyword">public void</span> onGameTick(GameTick gameTick) {
+        updatePlayerModel();
+    }
+
+    <span class="keyword">private void</span> updatePlayerModel() {
+        Player localPlayer = client.getLocalPlayer();
+        <span class="keyword">if</span> (localPlayer != <span class="literal">null</span>) {
+            <span class="comment">// Set the player's appearance to a different NPC ID</span>
+            localPlayer.getPlayerComposition().setTransmogId(MOLE_NPC_ID);
+        }
+    }
+}
+</code></pre>
             </div>
         </div>
     </main>
@@ -66,4 +118,3 @@
 <script defer src="https://static.cloudflareinsights.com/beacon.min.js/v8c78df7c7c0f484497ecbca7046644da1771523124516" integrity="sha512-8DS7rgIrAmghBFwoOTujcf6D9rXvH8xm8JQ1Ja01h9QX8EzXldiszufYa4IFfKdLUKTTrnSFXLDkUEOTrZQ8Qg==" data-cf-beacon='{"version":"2024.11.0","token":"4c6229722a6346bc8eb5cb0e5eae5d41","server_timing":{"name":{"cfCacheStatus":true,"cfEdge":true,"cfExtPri":true,"cfL4":true,"cfOrigin":true,"cfSpeedBrain":true},"location_startswith":null}}' crossorigin="anonymous"></script>
 </body>
 </html>
-

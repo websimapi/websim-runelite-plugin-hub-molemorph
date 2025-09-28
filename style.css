@@ -207,6 +207,90 @@ h3 {
     100% { bottom: -200px; opacity: 0; }
 }
 
+#source-code-btn {
+    background-color: var(--accent-color);
+    color: var(--text-primary);
+    border: none;
+    padding: 0.8rem 1.5rem;
+    font-size: 1rem;
+    font-weight: bold;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.2s, transform 0.2s;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-top: 1rem;
+}
+
+#source-code-btn:hover {
+    background-color: #4189b6;
+    transform: translateY(-2px);
+}
+
+#source-code-btn img {
+    width: 20px;
+    height: 20px;
+}
+
+.source-code-container {
+    background-color: var(--bg-dark);
+    margin-top: 1.5rem;
+    border-top: 2px solid var(--bg-light);
+    max-height: 500px;
+    opacity: 1;
+    transition: max-height 0.5s ease-in-out, opacity 0.5s ease-in-out, padding 0.5s ease-in-out;
+    overflow: hidden;
+}
+
+.source-code-container.hidden {
+    max-height: 0;
+    opacity: 0;
+    padding-top: 0;
+    padding-bottom: 0;
+    margin-top: 0;
+}
+
+.source-code-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: var(--bg-light);
+    padding: 0.5rem 1rem;
+}
+
+.source-code-header h4 {
+    font-family: 'Courier New', Courier, monospace;
+}
+
+#copy-code-btn {
+    background-color: var(--accent-color);
+    color: white;
+    border: none;
+    padding: 0.4rem 0.8rem;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+#copy-code-btn:hover {
+    background-color: #4189b6;
+}
+
+.source-code-container pre {
+    padding: 1rem;
+    overflow-x: auto;
+    background-color: #2b2b2b;
+    color: #a9b7c6;
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 0.9rem;
+}
+
+.source-code-container code .comment { color: #808080; }
+.source-code-container code .keyword { color: #cc7832; }
+.source-code-container code .string { color: #6a8759; }
+.source-code-container code .literal { color: #6897bb; }
+
 footer {
     text-align: center;
     padding: 1rem;
@@ -214,4 +298,3 @@ footer {
     font-size: 0.8rem;
     color: var(--text-secondary);
 }
-

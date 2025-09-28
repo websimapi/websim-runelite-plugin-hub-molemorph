@@ -1,8 +1,8 @@
 document.addEventListener('DOMContentLoaded', () => {
-    const downloadBtn = document.getElementById('download-btn');
-    const progressBarContainer = document.querySelector('.progress-bar-container');
-    const progressBar = document.getElementById('progress-bar');
-    const statusText = document.getElementById('status-text');
+    const sourceCodeBtn = document.getElementById('source-code-btn');
+    const sourceCodeContainer = document.getElementById('source-code-container');
+    const copyCodeBtn = document.getElementById('copy-code-btn');
+    const codeBlock = document.getElementById('plugin-code-block');
 
     let audioContext;
     let downloadSoundBuffer;
@@ -32,48 +32,33 @@ document.addEventListener('DOMContentLoaded', () => {
         source.start(0);
     }
 
-    downloadBtn.addEventListener('click', () => {
-        initAudio();
-        
-        downloadBtn.disabled = true;
-        downloadBtn.querySelector('span').textContent = 'Downloading...';
-
-        statusText.textContent = '';
-        progressBar.style.width = '0%';
-        progressBarContainer.classList.add('visible');
-        
-        // Force a reflow to ensure the transition starts from 0
-        void progressBar.offsetWidth;
-
-        setTimeout(() => {
-            progressBar.style.width = '100%';
-        }, 100);
-
-        setTimeout(() => {
-            downloadBtn.querySelector('span').textContent = 'Installed!';
-            downloadBtn.style.backgroundColor = 'var(--success-color)';
-            statusText.textContent = 'Plugin successfully installed!';
-            
-            playSound(downloadSoundBuffer);
-            showMolePopup();
-        }, 2100);
-    });
-
-    function showMolePopup() {
-        const existingPopup = document.querySelector('.mole-popup');
-        if (existingPopup) {
-            existingPopup.remove();
+    sourceCodeBtn.addEventListener('click', () => {
+        sourceCodeContainer.classList.toggle('hidden');
+        if (sourceCodeContainer.classList.contains('hidden')) {
+            sourceCodeBtn.querySelector('span').textContent = 'View Source Code';
+        } else {
+            sourceCodeBtn.querySelector('span').textContent = 'Hide Source Code';
         }
+    });
+    
+    copyCodeBtn.addEventListener('click', () => {
+        initAudio(); // Ensure audio is ready
 
-        const moleImg = document.createElement('img');
-        moleImg.src = 'mole-popup.png';
-        moleImg.alt = 'A cute mole';
-        moleImg.className = 'mole-popup';
-        document.body.appendChild(moleImg);
+        navigator.clipboard.writeText(codeBlock.innerText).then(() => {
+            copyCodeBtn.textContent = 'Copied!';
+            copyCodeBtn.style.backgroundColor = 'var(--success-color)';
+            playSound(downloadSoundBuffer);
 
-        moleImg.addEventListener('animationend', () => {
-            moleImg.remove();
+            setTimeout(() => {
+                copyCodeBtn.textContent = 'Copy Code';
+                copyCodeBtn.style.backgroundColor = 'var(--accent-color)';
+            }, 2000);
+        }).catch(err => {
+            console.error('Failed to copy code: ', err);
+            copyCodeBtn.textContent = 'Failed!';
+            setTimeout(() => {
+                copyCodeBtn.textContent = 'Copy Code';
+            }, 2000);
         });
-    }
+    });
 });
-
