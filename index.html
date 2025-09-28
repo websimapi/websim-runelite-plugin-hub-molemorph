@@ -45,10 +45,18 @@
                 </div>
 
                 <div class="download-section">
-                    <button id="source-code-btn">
+                    <button id="download-btn">
                         <img src="download-icon.png" alt="">
-                        <span>View Source Code</span>
+                        <span>Download Plugin</span>
                     </button>
+                    <div id="progress-bar-container" class="progress-bar-container">
+                        <div id="progress-bar" class="progress-bar"></div>
+                    </div>
+                    <p id="status-text"></p>
+                </div>
+
+                <div class="source-code-header-toggle">
+                    <h4 id="toggle-source-view">View Source Code</h4>
                 </div>
             </div>
 
@@ -60,24 +68,35 @@
                 <pre><code id="plugin-code-block" class="language-java"><span class="comment">// MoleMorphPlugin.java</span>
 <span class="keyword">package</span> net.runelite.client.plugins.molemorph;
 
+<span class="keyword">import</span> com.google.inject.Provides;
 <span class="keyword">import</span> javax.inject.Inject;
 <span class="keyword">import</span> net.runelite.api.*;
 <span class="keyword">import</span> net.runelite.api.events.GameTick;
+<span class="keyword">import</span> net.runelite.client.config.ConfigManager;
 <span class="keyword">import</span> net.runelite.client.eventbus.Subscribe;
 <span class="keyword">import</span> net.runelite.client.plugins.Plugin;
 <span class="keyword">import</span> net.runelite.client.plugins.PluginDescriptor;
 
 @PluginDescriptor(
     name = <span class="string">"MoleMorph"</span>,
-    description = <span class="string">"Transforms your character into a Baby Mole!"</span>,
-    tags = {<span class="string">"mole"</span>, <span class="string">"transform"</span>, <span class="string">"visual"</span>, <span class="string">"npc"</span>}
+    description = <span class="string">"Transforms your character into the Baby Mole pet!"</span>,
+    tags = {<span class="string">"mole"</span>, <span class="string">"transform"</span>, <span class="string">"visual"</span>, <span class="string">"npc"</span>, <span class="string">"pet"</span>}
 )
 <span class="keyword">public class</span> MoleMorphPlugin <span class="keyword">extends</span> Plugin {
 
     @Inject
     <span class="keyword">private</span> Client client;
 
+    @Inject
+    <span class="keyword">private</span> MoleMorphConfig config;
+
     <span class="keyword">private final int</span> MOLE_NPC_ID = NpcID.BABY_MOLE;
+    <span class="keyword">private final int</span> INVALID_TRANSFORM_ID = -<span class="literal">1</span>;
+
+    @Provides
+    MoleMorphConfig provideConfig(ConfigManager configManager) {
+        <span class="keyword">return</span> configManager.getConfig(MoleMorphConfig.class);
+    }
 
     @Override
     <span class="keyword">protected void</span> startUp() <span class="keyword">throws</span> Exception {
@@ -86,10 +105,7 @@
 
     @Override
     <span class="keyword">protected void</span> shutDown() <span class="keyword">throws</span> Exception {
-        Player localPlayer = client.getLocalPlayer();
-        <span class="keyword">if</span> (localPlayer != <span class="literal">null</span>) {
-            localPlayer.getPlayerComposition().setTransmogId(-<span class="literal">1</span>);
-        }
+        resetPlayerModel();
     }
 
     @Subscribe
@@ -99,10 +115,56 @@
 
     <span class="keyword">private void</span> updatePlayerModel() {
         Player localPlayer = client.getLocalPlayer();
-        <span class="keyword">if</span> (localPlayer != <span class="literal">null</span>) {
-            <span class="comment">// Set the player's appearance to a different NPC ID</span>
-            localPlayer.getPlayerComposition().setTransmogId(MOLE_NPC_ID);
+        <span class="keyword">if</span> (localPlayer == <span class="literal">null</span>) {
+            <span class="keyword">return</span>;
         }
+
+        <span class="comment">// If the plugin is enabled in the config, transform the player.</span>
+        <span class="comment">// Otherwise, change them back.</span>
+        <span class="keyword">if</span> (config.enableMoleMorph()) {
+            localPlayer.getPlayerComposition().setTransmogId(MOLE_NPC_ID);
+        } <span class="keyword">else</span> {
+            <span class="comment">// Check if we are currently transformed before resetting</span>
+            <span class="keyword">if</span> (localPlayer.getPlayerComposition().getTransmogId() == MOLE_NPC_ID) {
+                resetPlayerModel();
+            }
+        }
+    }
+
+    <span class="keyword">private void</span> resetPlayerModel() {
+        Player localPlayer = client.getLocalPlayer();
+        <span class="keyword">if</span> (localPlayer != <span class="literal">null</span>) {
+            <span class="comment">// Setting the transmog ID to -1 reverts the player to their original appearance.</span>
+            localPlayer.getPlayerComposition().setTransmogId(INVALID_TRANSFORM_ID);
+        }
+    }
+}
+</code></pre>
+            </div>
+
+            <div id="config-code-container" class="source-code-container hidden">
+                <div class="source-code-header">
+                    <h4>MoleMorphConfig.java</h4>
+                    <button class="copy-code-btn" data-target="config-code-block">Copy Code</button>
+                </div>
+                <pre><code id="config-code-block" class="language-java"><span class="comment">// MoleMorphConfig.java</span>
+<span class="keyword">package</span> net.runelite.client.plugins.molemorph;
+
+<span class="keyword">import</span> net.runelite.client.config.Config;
+<span class="keyword">import</span> net.runelite.client.config.ConfigGroup;
+<span class="keyword">import</span> net.runelite.client.config.ConfigItem;
+
+@ConfigGroup(<span class="string">"molemorph"</span>)
+<span class="keyword">public interface</span> MoleMorphConfig <span class="keyword">extends</span> Config {
+
+    @ConfigItem(
+        keyName = <span class="string">"enableMoleMorph"</span>,
+        name = <span class="string">"Enable Mole Morph"</span>,
+        description = <span class="string">"Toggles the character transformation on or off."</span>,
+        position = <span class="literal">1</span>
+    )
+    <span class="keyword">default boolean</span> enableMoleMorph() {
+        <span class="keyword">return true</span>;
     }
 }
 </code></pre>

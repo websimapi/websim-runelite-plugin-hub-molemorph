@@ -128,6 +128,7 @@ h3 {
 
 .download-section {
     text-align: center;
+    padding: 1rem 0;
 }
 
 #download-btn {
@@ -189,6 +190,22 @@ h3 {
     min-height: 1.2em;
 }
 
+.source-code-header-toggle {
+    text-align: center;
+    padding: 0.5rem;
+    color: var(--text-secondary);
+    cursor: pointer;
+    background-color: var(--bg-light);
+    border-top: 1px solid var(--bg-dark);
+    margin-top: 1rem;
+    transition: background-color 0.2s;
+}
+
+.source-code-header-toggle:hover {
+    background-color: #40444b;
+    color: var(--text-primary);
+}
+
 .mole-popup {
     position: fixed;
     bottom: -200px;
@@ -235,11 +252,10 @@ h3 {
 
 .source-code-container {
     background-color: var(--bg-dark);
-    margin-top: 1.5rem;
     border-top: 2px solid var(--bg-light);
     max-height: 500px;
     opacity: 1;
-    transition: max-height 0.5s ease-in-out, opacity 0.5s ease-in-out, padding 0.5s ease-in-out;
+    transition: max-height 0.5s ease-in-out, opacity 0.5s ease-in-out, padding 0.5s ease-in-out, margin 0.5s;
     overflow: hidden;
 }
 
@@ -248,8 +264,17 @@ h3 {
     opacity: 0;
     padding-top: 0;
     padding-bottom: 0;
+    border-top: none;
     margin-top: 0;
 }
+
+#config-code-container {
+    margin-top: 1rem;
+}
+#config-code-container.hidden {
+    margin-top: 0;
+}
+
 
 .source-code-header {
     display: flex;
@@ -263,7 +288,7 @@ h3 {
     font-family: 'Courier New', Courier, monospace;
 }
 
-#copy-code-btn {
+.copy-code-btn {
     background-color: var(--accent-color);
     color: white;
     border: none;
@@ -273,7 +298,7 @@ h3 {
     transition: background-color 0.2s;
 }
 
-#copy-code-btn:hover {
+.copy-code-btn:hover {
     background-color: #4189b6;
 }
 
